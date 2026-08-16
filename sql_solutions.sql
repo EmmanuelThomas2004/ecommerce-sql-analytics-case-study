@@ -1,0 +1,15 @@
+1=SELECT * FROM Sales WHERE order_status = "Completed" AND category = "Electronics";
+2=SELECT DISTINCT city FROM Customers ORDER BY  city ASC;
+3=SELECT DISTINCT product_name,category, unit_priceFROM SalesORDER BY unit_price DESCLIMIT 5;
+4=SELECT customer_id, customer_name,state,signup_date FROM Customers WHERE YEAR(signup_date) = 2023;
+5=SELECT SUM(quantity) AS total_items_sold,SUM( sale_amount) AS total_revenue, category FROM Sales GROUP BY  category;
+6=SELECT payment_method,SUM(sale_amount) AS Total_Revenue FROM  Sales  GROUP BY  payment_method HAVING SUM(sale_amount) > 150000 ORDER BY  SUM(sale_amount) DESC;
+7=SELECT ROUND(AVG(age),1) AS Avg_Age,customer_segment FROM  Customers GROUP BY customer_segment;
+8= SELECT CASE WHEN sale_amount >  15000 THEN "High Value" WHEN sale_amount >= 5000 THEN "Medium Value" ELSE "Low Value" END AS value_tier,COUNT(sale_id) FROM  Sales GROUP BY CASE WHEN sale_amount >  15000 THEN "High Value" WHEN sale_amount >= 5000 THEN "Medium Value" ELSE "Low Value" END;
+9=SELECT C.customer_name,SUM(S.sale_amount) AS total_Revenue FROM  Sales S INNER JOIN  Customers C ON C. customer_id = S. customer_id GROUP BY  C.customer_name ORDER BY  total_Revenue DESC LIMIT 10;
+10=SELECT  customer_id FROM Customers WHERE customer_id NOT IN (SELECT customer_id FROM Sales); || SELECT C.customer_id FROM Customers C LEFT JOIN Sales S ON S. customer_id = C. customer_id WHERE S.sale_id IS NULL;
+11=SELECT YEAR(sale_date) AS Sales_Year,MONTH(sale_date) AS Sales_Month,SUM(sale_amount) AS Total_Revenue,COUNT(sale_id) AS total_orders FROM Sales GROUP BY YEAR(sale_date) ,MONTH(sale_date) ORDER BY Sales_Year,Sales_Month;
+12=SELECT DISTINCT C.customer_name, C.city, C.state FROM  Sales S INNER JOIN  Customers C ON C. customer_id = S. customer_id WHERE S.customer_id = (SELECT customer_id  FROM  Sales GROUP BY  customer_id ORDER BY MAX(sale_amount) DESC LIMIT 1);
+13= SELECT * FROM (SELECT sale_id,category,product_name,sale_amount,RANK() OVER(PARTITION BY  category ORDER BY sale_amount DESC) AS TOP_3 FROM Sales)T WHERE TOP_3 <= 3;
+14= SELECT * FROM (SELECT S.customer_id,C.customer_name,SUM(S.sale_amount) AS total_spent,DENSE_RANK() OVER(ORDER BY  SUM(S.sale_amount) DESC) AS TOP2 FROM Sales S INNER JOIN  Customers C ON C. customer_id = S. customer_id GROUP BY S.customer_id,C.customer_name)T WHERE TOP2 = 2;
+15=SELECT COUNT(S.sale_id) AS total_orders,S.customer_id,C. customer_name,(SUM(CASE WHEN order_status != "Completed" THEN 1 ELSE 0 END))*100/COUNT(sale_id) AS risk_percentage  FROM  Sales S INNER JOIN  Customers C ON C. customer_id = S. customer_id WHERE C.customer_segment = "Platinum"   GROUP BY  S.customer_id,C. customer_name HAVING risk_percentage > 20;
